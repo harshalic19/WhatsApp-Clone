@@ -23,7 +23,7 @@ class Chatstore: ObservableObject {
         guard let currentUserID = Auth.auth().currentUser?.uid else { return }
         
         //checking if chat is from logged user (messagefromMe = true) and getting sent chat
-        self.db.collection("Chats").whereField("chatFromUser", isEqualTo: Auth.auth().currentUser!.uid).order(by: "date", descending: true).addSnapshotListener { snapshot, error in
+        self.db.collection("Chats").whereField("chatFromUser", isEqualTo: currentUserID).addSnapshotListener { snapshot, error in
             if let error = error {
                 print(error.localizedDescription)
             } else {
@@ -54,7 +54,7 @@ class Chatstore: ObservableObject {
                 }
                 
                 //checking if chat is to logged user (messagefromMe = false) and getting received chat
-                self.db.collection("Chats").whereField("chatWithUser", isEqualTo: Auth.auth().currentUser!.uid).order(by: "date", descending: true).addSnapshotListener { snapshot, error in
+                self.db.collection("Chats").whereField("chatWithUser", isEqualTo: currentUserID).addSnapshotListener { snapshot, error in
                     if let error = error {
                         print(error.localizedDescription)
                     } else {
@@ -81,6 +81,11 @@ class Chatstore: ObservableObject {
                                 }
                             }
                         }
+                        
+                        //sorting chats by sent date 
+                        self.chatsArray = self.chatsArray.sorted(by: {
+                            $0.date.compare($1.date) == .orderedAscending
+                        })
                         
                         self.objectWillChange.send(self.chatsArray)
                     }

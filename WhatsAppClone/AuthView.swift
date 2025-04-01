@@ -113,11 +113,12 @@ struct AuthView: View {
                             } catch {
                                 
                             }
-                            self.showAuthView = true
                         } label: {
-                            Text("Log out")
+                            Text("Sign Up")
                         }
+                        Spacer()
                     }
+                }
             }
         }
     }
